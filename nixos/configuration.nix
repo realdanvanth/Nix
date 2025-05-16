@@ -8,13 +8,25 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      <home-manager/nixos>
     ];
 
+  #Experimental Settings
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.configurationLimit = 5;
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+
+  #AutoUpdate
+  system.autoUpgrade.enable = true;
+  system.autoUpgrade.dates = "weekly";
+
+  #AutoCleanUp
+  nix.gc.automatic = true;
+  nix.gc.dates = "daily";
+  nix.gc.options = "--delets-older-than 10d";
+  nix.settings.auto-optimise-store = true;
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -61,6 +73,7 @@
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
+  hardware.graphics.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -84,7 +97,7 @@
     description = "real";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-     neofetch neovim vim btop git foot 
+     neofetch neovim vim btop foot hyprpaper bibata-cursors brightnessctl 
     ];
   };
 
@@ -99,7 +112,7 @@
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
-  efibootmgr
+  efibootmgr git 
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -128,6 +141,22 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
-  nix.gc = { automatic = true; dates = "weekly"; options = "--delete-older-than 7d"; }; 
+  # hyprland
+  programs.hyprland = {
+  	enable = true;
+    	xwayland.enable = true;
+	};
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = "1"; 
+  environment.sessionVariables = {
+    XCURSOR_THEME = "Bibata-Modern-Ice";  # or "Adwaita", "Capitaine-Cursors", etc.
+    XCURSOR_SIZE = "18";
+  };
+  home-manager.users.real = { pkgs, ...}:{
 
+  home.packages = [ pkgs.fastfetch ];
+  home.stateVersion = "23.11";
+
+  };
 }
+
