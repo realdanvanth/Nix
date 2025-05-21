@@ -97,8 +97,11 @@
     description = "real";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-     neofetch neovim vim btop foot hyprpaper bibata-cursors brightnessctl 
+     neofetch neovim vim btop foot hyprpaper bibata-cursors brightnessctl waybar tofi zsh 
+     zsh-syntax-highlighting zsh-history-substring-search zsh-autosuggestions wl-clipboard 
+     gcc grim slurp tesseract yt-dlp steam mysql-workbench
     ];
+    shell=pkgs.zsh;
   };
 
   # Install firefox.
@@ -112,7 +115,7 @@
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
-  efibootmgr git 
+  efibootmgr git realvnc-vnc-viewer mariadb
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -152,11 +155,34 @@
     XCURSOR_THEME = "Bibata-Modern-Ice";  # or "Adwaita", "Capitaine-Cursors", etc.
     XCURSOR_SIZE = "18";
   };
+
+  #HomeManager
   home-manager.users.real = { pkgs, ...}:{
 
   home.packages = [ pkgs.fastfetch ];
-  home.stateVersion = "23.11";
+  home.stateVersion = "23.11"; 
+  };
 
+  #Fonts
+  fonts.packages = with pkgs; [
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+  ];
+
+  #zsh
+  programs.zsh.enable = true;
+  programs.zsh.autosuggestions.enable = true;
+  programs.zsh.syntaxHighlighting.enable = true;
+  #paste these 
+  # git clone --depth 1 https://github.com/wbthomason/packer.nvim \
+  # ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+  services.openssh.enable = true;
+  #bluetooth
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
+  #mysql
+  services.mysql = {
+  enable = true;
+  package = pkgs.mariadb;  # Change from pkgs.mysql to pkgs.mariadb
   };
 }
-
