@@ -12,7 +12,7 @@
     ];
 
   #Experimental Settings
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ]; 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -96,11 +96,38 @@
     isNormalUser = true;
     description = "real";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-     neofetch neovim vim btop foot hyprpaper bibata-cursors brightnessctl waybar tofi zsh 
-     zsh-syntax-highlighting zsh-history-substring-search zsh-autosuggestions wl-clipboard 
-     gcc grim slurp tesseract yt-dlp steam mysql-workbench
-    ];
+    packages = with import <nixpkgs> { config.allowUnfree = true; }; [
+    neofetch
+    neovim
+    vim
+    btop
+    foot
+    hyprpaper
+    bibata-cursors
+    brightnessctl
+    waybar
+    tofi
+    zsh
+    zsh-syntax-highlighting
+    zsh-history-substring-search
+    zsh-autosuggestions
+    wl-clipboard
+    gcc
+    grim
+    slurp
+    tesseract
+    yt-dlp
+    steam
+    mysql-workbench
+    blueman
+    clang-tools
+    telegram-desktop
+    qbittorrent
+    tree
+    fzf
+  cmatrix
+  ];
+
     shell=pkgs.zsh;
   };
 
@@ -158,10 +185,10 @@
 
   #HomeManager
   home-manager.users.real = { pkgs, ...}:{
-
   home.packages = [ pkgs.fastfetch ];
   home.stateVersion = "23.11"; 
   };
+
 
   #Fonts
   fonts.packages = with pkgs; [
